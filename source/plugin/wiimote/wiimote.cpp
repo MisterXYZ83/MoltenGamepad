@@ -464,7 +464,23 @@ void wiimote::open_node(struct dev_node* node) {
   if (grab_permissions) grab_chmod_node(node, true);
 
   methods.watch_file(ref, node->fd, node);
+  
+  //inizializzo la struttura
+  xwiigun_init();
 };
+
+void wiimote::xwiigun_init()
+{
+  memset(&gun, 0, sizeof(gun));
+
+  reset_ir(gun.ir.prev);
+  reset_ir(gun.ir.now);
+  reset_ir(gun.ir.cal);
+   
+  // caller can adjust this later on for calibration purposes
+  gun.center.x = 512;
+  gun.center.y = 384;
+}
 
 void wiimote::grab_chmod_node(struct dev_node* node, bool grab) {
   wiimote_manager::grab_permissions(node->dev, grab);

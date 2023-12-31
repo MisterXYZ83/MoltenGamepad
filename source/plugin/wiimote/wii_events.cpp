@@ -6,6 +6,10 @@
 #define ABS DEV_AXIS
 #define OPT DEV_OPTION
 
+extern void xwiigun_manage_accelerators(struct xwiigun *gun, struct input_event *ev);
+extern void xwiigun_manage_ir(struct xwiigun *gun, struct input_event *ev);
+extern void xwiigun_compute_ir(struct xwiigun *gun);
+
 int lookup_wii_event(const char* evname) {
   if (evname == nullptr) return -1;
   for (int i = 0; i < wii_event_max; i++) {
@@ -404,14 +408,17 @@ void wiimote::process_accel(int fd) {
       case ABS_RX:
         accelcache[0] = ev.value;
         send_value(offset + 0, (ev.value - accelcalibrations[0]) * WIIMOTE_ACCEL_SCALE);
+		xwiigun_manage_accelerators(&gun, &ev);
         break;
       case ABS_RY:
         accelcache[1] = ev.value;
         send_value(offset + 1, (ev.value - accelcalibrations[1]) * WIIMOTE_ACCEL_SCALE);
+		xwiigun_manage_accelerators(&gun, &ev);
         break;
       case ABS_RZ:
         accelcache[2] = ev.value;
         send_value(offset + 2, (ev.value - accelcalibrations[2]) * WIIMOTE_ACCEL_SCALE);
+		xwiigun_manage_accelerators(&gun, &ev);
         break;
       case SYN_REPORT:
         methods.send_syn_report(ref);
@@ -436,31 +443,41 @@ void wiimote::process_ir(int fd) {
     switch (ev.code) {
     case ABS_HAT0X:
       ircache[0].x = ev.value;
+	  xwiigun_manage_ir(&gun, &ev);
       break;
     case ABS_HAT0Y:
       ircache[0].y = ev.value;
+	  xwiigun_manage_ir(&gun, &ev);
       break;
     case ABS_HAT1X:
       ircache[1].x = ev.value;
+	  xwiigun_manage_ir(&gun, &ev);
       break;
     case ABS_HAT1Y:
       ircache[1].y = ev.value;
+	  xwiigun_manage_ir(&gun, &ev);
       break;
     case ABS_HAT2X:
       ircache[2].x = ev.value;
+	  xwiigun_manage_ir(&gun, &ev);
       break;
     case ABS_HAT2Y:
       ircache[2].y = ev.value;
+	  xwiigun_manage_ir(&gun, &ev);
       break;
     case ABS_HAT3X:
       ircache[3].x = ev.value;
+	  xwiigun_manage_ir(&gun, &ev);
       break;
     case ABS_HAT3Y:
       ircache[3].y = ev.value;
+	  xwiigun_manage_ir(&gun, &ev);
       break;
     case SYN_REPORT:
-      compute_ir();
-      methods.send_syn_report(ref);
+	xwiigun_compute_ir(&gun);
+	compute_ir();
+	methods.send_syn_report(ref);
+	  
       break;
     }
   }
@@ -473,6 +490,29 @@ void wiimote::process_ir(int fd) {
 }
 
 void wiimote::compute_ir() {
+	
+	int offset = 0;
+	
+	if (mode == NUNCHUK_EXT) {
+		offset = nk_ir_x;
+	} else {
+		offset = wm_ir_x;
+	}
+
+	//aggiorno il cursore solo se non e' offscreen
+	if (!gun.offscreen)
+	{
+		send_value(offset + 0, (int)(2 * (gun.hpos - 0.5) * ABS_RANGE));
+		send_value(offset + 1, (int)(2 * (gun.vpos - 0.5) * ABS_RANGE));
+	}
+	else
+	{
+		send_value(offset + 0, (int)ABS_RANGE);
+		send_value(offset + 1, (int)ABS_RANGE);
+	}
+}
+
+/*void wiimote::compute_ir() {
   int num = 0;
   int x = NO_IR_DATA;
   int y = NO_IR_DATA;
@@ -498,11 +538,22 @@ void wiimote::compute_ir() {
     //x axis appears to be 0-1022, y axis reported 0-800
     //invert x axis to match user movements: aiming left makes IR dots move right on camera
     //y-axis is already correct, likely due to y-axis/screen conventions (positive is lower)
-    send_value(offset + 0, (511-x) * IR_X_SCALE);
-    send_value(offset + 1, (y-400) * IR_Y_SCALE);
+    //TOP: 135
+    //BOTTOM: 350
+    int top = 120;
+    int bottom = 360;
+    int left = 330;
+    int right = 700;
+
+    int real_y = ((2*ABS_RANGE)*(y-top))/(bottom-top)-ABS_RANGE;
+    int real_x = ((2*ABS_RANGE)*(x-left))/(right-left)-ABS_RANGE;
+
+    send_value(offset + 0, -real_x);/*(511-x) * IR_X_SCALE);
+    send_value(offset + 1, real_y); /*((y-400) * (IR_Y_SCALE)) - 8000);
   }
 
-}
+}*/
+
 
 void wiimote::process_motionplus(int fd) {
   struct input_event ev;

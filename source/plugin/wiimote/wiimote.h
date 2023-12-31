@@ -11,6 +11,8 @@
 #include "../plugin.h"
 #include "wii_events.h"
 
+#include "xwiigun.h"
+
 #define WIIMOTE_NAME "Nintendo Wii Remote"
 #define WIIMOTE_ACCEL_NAME  "Nintendo Wii Remote Accelerometer"
 #define WIIMOTE_IR_NAME "Nintendo Wii Remote IR"
@@ -129,8 +131,7 @@ private:
   void grab_chmod_node(struct dev_node* node, bool grabbed);
   void grab_ioctl(bool grabbed);
   void grab_chmod(bool grabbed);
-
-
+	
   void send_value(int id, int64_t value) {
     methods.send_value(ref, id, value);
   };
@@ -153,6 +154,9 @@ private:
 
   int priv_pipe;
 
+  //struttura dati per puntamento avanzato
+  xwiigun gun;
+  void xwiigun_init();
 };
 
 

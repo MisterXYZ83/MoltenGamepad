@@ -33,6 +33,11 @@ public:
 
   std::shared_ptr<virtual_device> find_slot(std::string name);
   output_slot keyboard;
+  
+  //tastiere supplementari
+  output_slot keyboard_1;
+  output_slot keyboard_2;
+  
   output_slot dummyslot;
   output_slot debugslot;
 

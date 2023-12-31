@@ -1201,3 +1201,77 @@ group_translator* MGparser::parse_group_trans(std::vector<token>& rhs, response_
 
   return group_trans;
 }
+
+/*
+  //tastiera/mouse 1
+  trans_decl mouse_decl_1;
+  mouse_decl_1.identifier = "mouse1";
+  mouse_decl_1.decl_str = "event = mouse1(trans)";
+  mouse_decl_1.mapped_events.push_back(DEV_KEY);
+  mouse_decl_1.fields.push_back({"","",MG_TRANS, false, false});
+  trans_gens["mouse1"] = trans_generator( mouse_decl_1, [mg] (std::vector<MGField>& fields) {
+    //Need to tack on a field with the keyboard slot
+    MGField keyboard_slot;
+    keyboard_slot.type = MG_SLOT;
+    keyboard_slot.slot = mg->slots->keyboard_1.virt_dev.get();
+    fields.push_back(keyboard_slot);
+    return new redirect_trans(fields);
+  });
+  //key is just a synonym to the above. It redirects events to the keyboard slot.
+  trans_gens["key1"] = trans_gens["mouse1"];
+  trans_gens["key1"].decl.decl_str = "event = key1(trans)";
+
+  //tastiera/mouse 2
+  trans_decl mouse_decl_2;
+  mouse_decl_2.identifier = "mouse2";
+  mouse_decl_2.decl_str = "event = mouse2(trans)";
+  mouse_decl_2.mapped_events.push_back(DEV_KEY);
+  mouse_decl_2.fields.push_back({"","",MG_TRANS, false, false});
+  trans_gens["mouse2"] = trans_generator( mouse_decl_2, [mg] (std::vector<MGField>& fields) {
+    //Need to tack on a field with the keyboard slot
+    MGField keyboard_slot;
+    keyboard_slot.type = MG_SLOT;
+    keyboard_slot.slot = mg->slots->keyboard_2.virt_dev.get();
+    fields.push_back(keyboard_slot);
+    return new redirect_trans(fields);
+  });
+  //key is just a synonym to the above. It redirects events to the keyboard slot.
+  trans_gens["key2"] = trans_gens["mouse2"];
+  trans_gens["key2"].decl.decl_str = "event = key2(trans)";	
+   
+  //tastiera/mouse 3
+  trans_decl mouse_decl_3;
+  mouse_decl_3.identifier = "mouse3";
+  mouse_decl_3.decl_str = "event = mouse3(trans)";
+  mouse_decl_3.mapped_events.push_back(DEV_KEY);
+  mouse_decl_3.fields.push_back({"","",MG_TRANS, false, false});
+  trans_gens["mouse3"] = trans_generator( mouse_decl_3, [mg] (std::vector<MGField>& fields) {
+    //Need to tack on a field with the keyboard slot
+    MGField keyboard_slot;
+    keyboard_slot.type = MG_SLOT;
+    keyboard_slot.slot = mg->slots->keyboard_3.virt_dev.get();
+    fields.push_back(keyboard_slot);
+    return new redirect_trans(fields);
+  });
+  //key is just a synonym to the above. It redirects events to the keyboard slot.
+  trans_gens["key3"] = trans_gens["mouse3"];
+  trans_gens["key3"].decl.decl_str = "event = key3(trans)";
+  
+  //tastiera/mouse 4
+  trans_decl mouse_decl_4;
+  mouse_decl_4.identifier = "mouse4";
+  mouse_decl_4.decl_str = "event = mouse4(trans)";
+  mouse_decl_4.mapped_events.push_back(DEV_KEY);
+  mouse_decl_4.fields.push_back({"","",MG_TRANS, false, false});
+  trans_gens["mouse4"] = trans_generator( mouse_decl_4, [mg] (std::vector<MGField>& fields) {
+    //Need to tack on a field with the keyboard slot
+    MGField keyboard_slot;
+    keyboard_slot.type = MG_SLOT;
+    keyboard_slot.slot = mg->slots->keyboard_4.virt_dev.get();
+    fields.push_back(keyboard_slot);
+    return new redirect_trans(fields);
+  });
+  //key is just a synonym to the above. It redirects events to the keyboard slot.
+  trans_gens["key4"] = trans_gens["mouse4"];
+  trans_gens["key4"].decl.decl_str = "event = key4(trans)";
+ */

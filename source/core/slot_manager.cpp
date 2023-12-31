@@ -36,14 +36,34 @@ slot_manager::slot_manager(int max_pads, bool keys, const virtpad_settings& pads
   if (keys) {
     uinput_ids kb_ids = {"Virtual Keyboard (MoltenGamepad)", "moltengamepad/keyboard", 1, 1, 1};
     uinput_ids rel_mouse_ids = {"Virtual Mouse (MoltenGamepad)", "moltengamepad/relmouse", 1, 1, 1};
-
+    uinput_ids kb1_ids = {"MVES Gun 1", "moltengamepad/keyboard", 1, 2, 1};
+    uinput_ids kb2_ids = {"MVES Gun 2", "moltengamepad/keyboard", 1, 3, 1};
+    uinput_ids rel_mouse1_ids = {"MVES Mouse 1", "moltengamepad/relmouse", 1, 1, 1};
+    uinput_ids rel_mouse2_ids = {"MVES Mouse 1", "moltengamepad/relmouse", 1, 1, 1};
+ 
     keyboard.virt_dev =  std::make_shared<virtual_keyboard>("keyboard", "A virtual keyboard", kb_ids, rel_mouse_ids, this, ui);
     keyboard.state = SLOT_ENABLED;
+	
+	//testiere supplementari
+    keyboard_1.virt_dev =  std::make_shared<virtual_keyboard>("keyboard1", "MVES Keyboard 1", kb1_ids, rel_mouse1_ids, this, ui);
+    keyboard_1.state = SLOT_ENABLED;
+    keyboard_2.virt_dev =  std::make_shared<virtual_keyboard>("keyboard2", "MVES Keyboard 2", kb2_ids, rel_mouse2_ids, this, ui);
+    keyboard_2.state = SLOT_ENABLED;
+	
   } else {
     keyboard.virt_dev = nullptr;
     keyboard.state = SLOT_DISABLED;
+	
+    keyboard_1.virt_dev = nullptr;
+    keyboard_1.state = SLOT_DISABLED;
+    keyboard_2.virt_dev = nullptr;
+    keyboard_2.state = SLOT_DISABLED;
   }
+  
   keyboard.name = "keyboard";
+  
+  keyboard_1.name = "keyboard1";
+  keyboard_2.name = "keyboard2";
 
   if (padstyle.rumble)
     ui->start_ff_thread();
@@ -76,6 +96,9 @@ slot_manager::~slot_manager() {
   dummyslot.virt_dev = nullptr;
   keyboard.virt_dev = nullptr;
   debugslot.virt_dev = nullptr;
+  
+  keyboard_1.virt_dev = nullptr;
+  keyboard_2.virt_dev = nullptr;
 }
 
 //should only be called while holding a lock.
@@ -104,7 +127,6 @@ int slot_manager::request_slot(input_source* dev) {
     move_device(dev,keyboard.virt_dev);
     return 0;
   }
-
 
   //In terms of our algorithm here, the number of active pads is more like
   //an upper bound on open pads to consider.
@@ -228,6 +250,14 @@ std::shared_ptr<virtual_device> slot_manager::find_slot(std::string slotname) {
   if (slotname == "keyboard" || slotname == keyboard.name) {
     return keyboard.virt_dev;
   }
+  
+  if (slotname == "keyboard1" || slotname == keyboard_1.name) {
+    return keyboard_1.virt_dev;
+  }
+  if (slotname == "keyboard2" || slotname == keyboard_2.name) {
+    return keyboard_2.virt_dev;
+  }
+  
   if (slotname == dummyslot.name) return dummyslot.virt_dev;
   if (slotname == debugslot.name) return debugslot.virt_dev;
   return nullptr;
@@ -444,6 +474,12 @@ void slot_manager::tick_all_slots() {
     debugslot.virt_dev->check_delayed_events();
   if (keyboard.virt_dev)
     keyboard.virt_dev->check_delayed_events();
+
+  if (keyboard_1.virt_dev)
+    keyboard_1.virt_dev->check_delayed_events();
+  if (keyboard_2.virt_dev)
+    keyboard_2.virt_dev->check_delayed_events();
+
   for (output_slot& slot : slots) {
     if (slot.virt_dev)
       slot.virt_dev->check_delayed_events();
