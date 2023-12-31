@@ -1,0 +1,43 @@
+# udev rules for a single-user installation of MoltenGamepad.
+# Installs as 90-moltengamepad.rules.
+
+# Allow user access to uinput.
+KERNEL=="uinput", MODE="0660", GROUP:="mves", OPTIONS+="static_node=uinput"
+
+# Match standard game pads
+SUBSYSTEM=="input", ACTION=="add", \
+ ENV{ID_INPUT_JOYSTICK}=="?*", \
+ OWNER:="mves", MODE:="0660"
+
+# Wiimote rules, as they do not match ID_INPUT_JOYSTICK.
+SUBSYSTEM=="leds", ACTION=="add", DRIVERS=="wiimote", \
+ RUN+="/bin/sh -c 'chgrp mves /sys%p/brightness'", \
+ RUN+="/bin/sh -c 'chmod g+w /sys%p/brightness'"
+
+SUBSYSTEM=="input", DRIVERS=="wiimote", \
+ MODE:="0660", OWNER:="mves"
+
+ 
+ # JoyCon rules. Bluetooth hidraw requires globbing to find the vendor/product ids...
+
+# Nintendo products over bluetooth hidraw
+KERNEL=="hidraw*", KERNELS=="0005:057E:*.*", MODE="0600", OWNER:="mves"
+
+#------
+# DS4 rules shamelessly stolen from Steam's udev rules.
+#------
+
+# DualShock 4 over USB hidraw
+KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="05c4", MODE="0600", OWNER:="mves", TAG-="uaccess"
+
+# DualShock 4 wireless adapter over USB hidraw
+KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0ba0", MODE="0600", OWNER:="mves", TAG-="uaccess"
+
+# DualShock 4 Slim over USB hidraw
+KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="09cc", MODE="0600", OWNER:="mves", TAG-="uaccess"
+
+# DualShock 4 over bluetooth hidraw
+KERNEL=="hidraw*", KERNELS=="*054C:05C4*", MODE="0600", OWNER:="mves", TAG-="uaccess"
+
+# DualShock 4 Slim over bluetooth hidraw
+KERNEL=="hidraw*", KERNELS=="*054C:09CC*", MODE="0600", OWNER:="mves", TAG-="uaccess"

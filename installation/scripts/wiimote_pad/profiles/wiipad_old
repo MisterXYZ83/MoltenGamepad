@@ -1,0 +1,21 @@
+[wiimote]
+wiimote.wm_2 = first
+wiimote.wm_a = third
+wiimote.wm_down = right
+wiimote.wm_plus = start
+wiimote.wm_minus = select
+wiimote.wm_1 = second
+wiimote.wm_right = up
+wiimote.wm_b = fourth
+wiimote.wm_left = down
+wiimote.wm_up = left
+wiimote.wm_home = mode
+wiimote.?grab_permissions = true
+wiimote.?gt_gyro_active = false
+wiimote.?wm_gyro_active = false
+wiimote.?grab_exclusive = true
+wiimote.?wm_ir_active = true
+wiimote.?gt_accel_active = false
+wiimote.?wm_accel_active = false
+wiimote.wm_ir_x = mouse1(left_x)
+wiimote.wm_ir_y = mouse1(left_y)

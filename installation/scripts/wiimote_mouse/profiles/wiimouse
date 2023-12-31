@@ -1,0 +1,12 @@
+[wiimote]
+wiimote.wm_2 = key(key_1)
+wiimote.wm_plus = key(key_f4)
+wiimote.wm_1 = key(key_5)
+wiimote.wm_home = key(key_leftalt)
+wiimote.?grab_permissions = true
+wiimote.?gt_gyro_active = false
+wiimote.?wm_gyro_active = false
+wiimote.?grab_exclusive = true
+wiimote.?wm_ir_active = true
+wiimote.?gt_accel_active = false
+wiimote.?wm_accel_active = true
